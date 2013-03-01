@@ -12,7 +12,7 @@ void increment(char**);
 void decrement(char**);
 void input(char**);
 void output(char**);
-int loop_start(char**, int);
+int loop(char**, int);
 
 int main(int argc, char* argv[]){
 
@@ -57,7 +57,7 @@ int main(int argc, char* argv[]){
 				input(&ptr);
 				break;
 			case '[':
-				i = loop_start(&ptr, i);
+				i = loop(&ptr, i);
 				break;
 			case ']':
 				/* loop_end(ptr); */
@@ -91,7 +91,7 @@ void input(char **ptr){
 	**ptr = getchar();
 }
 
-int loop_start(char **ptr, int pos){
+int loop(char **ptr, int pos){
 
 	pos++;
 	int rtn = pos;
@@ -118,7 +118,7 @@ int loop_start(char **ptr, int pos){
 				input(ptr);
 				break;
 			case '[':
-				pos = loop_start(ptr, pos);
+				pos = loop(ptr, pos);
 				break;
 			}
 			pos++;
