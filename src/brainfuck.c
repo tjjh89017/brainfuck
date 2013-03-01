@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+char array[30000];
 FILE *codefile;
 char code[30000];
 
@@ -16,12 +17,11 @@ int loop_start(char**, int);
 int main(int argc, char* argv[]){
 
 	/* program start */
-	char array[30000];
 	char *ptr=array;
 
-	if(argc == 0){
+	if(argc == 1){
 		printf("Usage: brainfuck [filename]\n");
-		exit(0);
+		exit(1);
 	}
 		
 	/* load file */
@@ -125,5 +125,5 @@ int loop_start(char **ptr, int pos){
 		}
 	}
 	
-	return rtn;
+	return pos;
 }
