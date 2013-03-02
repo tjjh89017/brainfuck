@@ -2,17 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-char array[30000];
-FILE *codefile;
-char code[30000];
+#define MAX_SIZE 65536
 
-void shift_right(char**);
-void shift_left(char**);
-void increment(char**);
-void decrement(char**);
-void input(char**);
-void output(char**);
-int loop(char**, int);
+char array[MAX_SIZE];
+char code[MAX_SIZE];
+FILE *codefile;
 
 int main(int argc, char* argv[]){
 
@@ -30,100 +24,58 @@ int main(int argc, char* argv[]){
 		printf("Usage: filename error\n");
 	}
 	/* load code */
-	int pos = 0;
-	while(fscanf(codefile, "%c", &code[pos]) != EOF){
-		pos++;
+	int size = 0;
+	while(fscanf(codefile, "%c", &code[size]) != EOF){
+		size++;
 	}
 
 	/* run code */
-	for(int i = 0; i <= pos; i++){
-		switch(code[i]){
+	int loop = 1;
+	for(int pos = 0; pos <= size; pos++){
+		switch(code[pos]){
 			case '>':
-				shift_right(&ptr);
+				ptr++;
 				break;
 			case '<':
-				shift_left(&ptr);
+				ptr--;
 				break;
 			case '+':
-				increment(&ptr);
+				++*ptr;
 				break;
 			case '-':
-				decrement(&ptr);
+				--*ptr;
 				break;
 			case '.':
-				output(&ptr);
+				putchar(*ptr);
 				break;
 			case ',':
-				input(&ptr);
+				*ptr = getchar();
 				break;
 			case '[':
-				i = loop(&ptr, i);
+				if(*ptr == 0){
+					loop = 1;
+					while(loop > 0){
+						pos++;
+						if(code[pos] == '[')
+							loop++;
+						else if(code[pos] == ']')
+							loop--;
+					}
+				}
 				break;
 			case ']':
-				/* loop_end(ptr); */
+				loop = 1;
+				while(loop > 0){
+					pos--;
+					if(code[pos] == '[')
+						loop--;
+					else if(code[pos] == ']')
+						loop++;
+				}
+				pos--;
 				break;
 		}
 	}
 
 	return 0;
-}
-
-void shift_right(char **ptr){
-	(*ptr)++;
-}
-
-void shift_left(char **ptr){
-	(*ptr)--;
-}
-
-void increment(char **ptr){
-	(**ptr)++;
-}
-void decrement(char **ptr){
-	(**ptr)--;
-}
-
-void output(char **ptr){
-	putchar(**ptr);
-}
-
-void input(char **ptr){
-	**ptr = getchar();
-}
-
-int loop(char **ptr, int pos){
-
-	pos++;
-	int rtn = pos;
-	while(**ptr){
-		pos = rtn;
-		while(code[pos] != ']'){
-			switch(code[pos]){
-			case '>':
-				shift_right(ptr);
-				break;
-			case '<':
-				shift_left(ptr);
-				break;
-			case '+':
-				increment(ptr);
-				break;
-			case '-':
-				decrement(ptr);
-				break;
-			case '.':
-				output(ptr);
-				break;
-			case ',':
-				input(ptr);
-				break;
-			case '[':
-				pos = loop(ptr, pos);
-				break;
-			}
-			pos++;
-		}
-	}
-	
-	return pos;
 }
